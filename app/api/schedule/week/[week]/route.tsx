@@ -139,8 +139,8 @@ const render = (
             }}
           >
             <img
-              src="https://hkleague2025.hkmahjong.org/images/logo-hkmjbs.png"
-              width={155}
+              src="https://hkleague2025.hkmahjong.org/images/logo-mahjestic.png"
+              width={64}
               height={64}
               alt=""
             />

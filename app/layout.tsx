@@ -33,6 +33,7 @@ export const metadata: Metadata = {
     "hkmj",
     "香港麻雀協會",
     "hkma",
+    "Mah-JesTic",
   ],
 };
 
