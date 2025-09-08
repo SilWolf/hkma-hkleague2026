@@ -57,7 +57,7 @@ export const getMatchesByDate = async (date: string) => {
   }
 
   return getMatchesGroupedByStageAndDate(
-    "regulars",
+    "semifinals",
     `${date}T00:00:00+08:00`,
     `${date}T23:59:59+08:00`,
     { withPlayerDetails: true }
@@ -70,7 +70,7 @@ export const getMatchByDateAndIndex = async (date: string, index = 1) => {
   }
 
   return getMatchesGroupedByStageAndDate(
-    "regulars",
+    "semifinals",
     `${date}T00:00:00+08:00`,
     `${date}T23:59:59+08:00`,
     { withPlayerDetails: true }
@@ -85,7 +85,7 @@ export const getMatchByWeek = async (week: number) => {
   endDate.setDate(endDate.getDate() + (week - 1) * 7);
 
   const result = await getMatchesGroupedByStageAndDate(
-    "regulars",
+    "semifinals",
     startDate.toISOString(),
     endDate.toISOString(),
     { withPlayerDetails: true }
