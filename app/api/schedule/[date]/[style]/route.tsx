@@ -138,7 +138,7 @@ const thumbnailRender = (
             }}
           >
             <img
-              src="https://hkleague2025.hkmahjong.org/images/logo-mahjestic.png"
+              src="https://hkleague2025.hkmahjong.org/images/logo-mahjestic.webp"
               width={64}
               height={64}
               alt=""
