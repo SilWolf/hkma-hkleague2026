@@ -376,7 +376,7 @@ export default async function Home() {
                         <span className="text-xs sm:text-base">
                           {statistics?.matchCount ?? 0}
                         </span>
-                        <span className="hidden sm:inline sm:text-sm">/60</span>
+                        <span className="hidden sm:inline sm:text-sm">/28</span>
                       </td>
                     </tr>
                   )

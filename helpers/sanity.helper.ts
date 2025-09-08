@@ -25,7 +25,7 @@ const STAGES = {
   },
 } as const;
 
-const CURRENT_STAGE_TOURNAMENT_ID = STAGES.regulars.tournamentId;
+const CURRENT_STAGE_TOURNAMENT_ID = STAGES.semifinals.tournamentId;
 
 const PLAYER_PROJECTION = `_id, name, nickname, designation, "portraitImage": portraitImage.asset->url, introduction`;
 const PLAYER_META_FIELDS = [

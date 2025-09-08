@@ -141,7 +141,7 @@ export default async function RankingPage() {
                       <span className="text-xs sm:text-base">
                         {statistics?.matchCount ?? 0}
                       </span>
-                      <span className="hidden sm:inline sm:text-sm">/60</span>
+                      <span className="hidden sm:inline sm:text-sm">/28</span>
                     </td>
                   </tr>
                 )
@@ -153,9 +153,7 @@ export default async function RankingPage() {
 
       <section className="pb-12">
         <div className="container mx-auto px-2">
-          <h3 className="text-xl font-semibold mb-2 sm:text-2xl">
-            數據 - 常規賽
-          </h3>
+          <h3 className="text-xl font-semibold mb-2 sm:text-2xl">數據</h3>
           <div className="w-full overflow-y-scroll">
             <table className="w-full min-w-[980px] whitespace-nowrap text-center">
               <thead className="[&_img]:inline-block [&_img]:w-12 [&_img]:h-12 xl:[&_img]:w-16 xl:[&_img]:h-16">
@@ -213,7 +211,7 @@ export default async function RankingPage() {
                         background: team.team.color + "80",
                       }}
                     >
-                      {team.statistics?.matchCount}/60
+                      {team.statistics?.matchCount}/28
                     </td>
                   ))}
                 </tr>
