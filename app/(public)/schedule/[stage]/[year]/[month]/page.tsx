@@ -115,12 +115,12 @@ const STAGES = [
     months: [
       {
         year: 2025,
-        month: 10,
+        month: 11,
         label: "10月",
       },
       {
         year: 2025,
-        month: 11,
+        month: 12,
         label: "11月",
       },
     ],
@@ -136,7 +136,7 @@ export async function generateMetadata({
     stage: "regulars" | "semifinals" | "finals";
   }>;
 }): Promise<Metadata> {
-  const { year, month, stage = "semifinals" } = await params;
+  const { year, month, stage = "finals" } = await params;
   const activeStage = STAGES.find((stageItem) => stageItem.name === stage);
 
   return {
