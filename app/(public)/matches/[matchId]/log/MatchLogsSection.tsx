@@ -23,8 +23,6 @@ const MatchLogsSection = ({ match }: { match: Match }) => {
     return match.rounds[activeIndex].tenhouReplayUrl?.replace("/6/", "/5/");
   }, [match, activeIndex]);
 
-  console.log(tenhouSource);
-
   return (
     <section>
       <div className="flex flex-wrap mb-8 gap-2">

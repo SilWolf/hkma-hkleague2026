@@ -1,3 +1,8 @@
+export type Tournament = {
+  _id: string;
+  expectedMatchesCount: number;
+};
+
 export type Match = {
   _id: string;
   name: string;

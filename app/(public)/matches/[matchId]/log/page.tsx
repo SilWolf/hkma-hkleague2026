@@ -2,7 +2,6 @@ import { getMatch } from "@/helpers/sanity.helper";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import MatchLogsSection from "./MatchLogsSection";
-import { useMemo, useState } from "react";
 
 const MatchDetailReplayPage = async ({
   params,

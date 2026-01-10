@@ -1,8 +1,8 @@
 import {
   getPlayersGroupByTeams,
-  getRegularTeams,
-  getRegularTeamsWithPlayers,
-  getTeams,
+  getBaseTeams,
+  getBaseTeamsWithPlayers,
+  getCurrentTeams,
 } from "@/helpers/sanity.helper";
 import { Metadata } from "next";
 import Link from "next/link";
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Teams() {
-  const tournamentTeams = await getRegularTeamsWithPlayers();
+  const tournamentTeams = await getBaseTeamsWithPlayers();
 
   return (
     <main className="relative">

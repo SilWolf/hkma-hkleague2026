@@ -1,4 +1,4 @@
-import { getTeams } from "@/helpers/sanity.helper";
+import { getCurrentTeams, getCurrentTournament } from "@/helpers/sanity.helper";
 import { renderPoint, renderRanking } from "@/helpers/string.helper";
 import { Metadata } from "next";
 
@@ -64,7 +64,8 @@ export const metadata: Metadata = {
 };
 
 export default async function RankingPage() {
-  const tournamentTeams = await getTeams();
+  const tournament = await getCurrentTournament();
+  const tournamentTeams = await getCurrentTeams();
 
   const tournamentTeamsOrderedByRanking = tournamentTeams.sort(
     (a, b) => (a.statistics?.ranking ?? 0) - (b.statistics?.ranking ?? 0)
@@ -141,7 +142,9 @@ export default async function RankingPage() {
                       <span className="text-xs sm:text-base">
                         {statistics?.matchCount ?? 0}
                       </span>
-                      <span className="hidden sm:inline sm:text-sm">/16</span>
+                      <span className="hidden sm:inline sm:text-sm">
+                        /{tournament.expectedMatchesCount}
+                      </span>
                     </td>
                   </tr>
                 )
@@ -211,7 +214,8 @@ export default async function RankingPage() {
                         background: team.team.color + "80",
                       }}
                     >
-                      {team.statistics?.matchCount}/16
+                      {team.statistics?.matchCount}/
+                      {tournament.expectedMatchesCount}
                     </td>
                   ))}
                 </tr>

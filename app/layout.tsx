@@ -4,18 +4,18 @@ import "./globals.css";
 import { Analytics } from "@vercel/analytics/react";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://hkleague2025.hkmahjong.org"),
+  metadataBase: new URL("https://hkleague2026.hkmahjong.org"),
   title: {
-    default: "HK-League 2025 香港麻雀協會 香港立直麻雀團體聯賽2025",
-    template: "%s | HK-League 2025 香港麻雀協會 香港立直麻雀團體聯賽2025",
+    default: "HK-League 2026 香港麻雀協會 香港立直麻雀團體聯賽2026",
+    template: "%s | HK-League 2026 香港麻雀協會 香港立直麻雀團體聯賽2026",
   },
   description:
-    "《HK-League 2025 香港立直麻雀團體聯賽2025》是由香港麻雀協會在2025年籌備的，在香港內賽程最長的立直麻將隊際競技聯賽，預計將進行近300場半莊戰，從16隊隊伍中決定最佳隊伍。",
+    "《HK-League 2026 香港立直麻雀團體聯賽2026》是由香港麻雀協會在2026年籌備的，在香港內賽程最長的立直麻將隊際競技聯賽，預計將進行近300場半莊戰，從16隊隊伍中決定最佳隊伍。",
   keywords: [
     "HK-League",
     "hkleague",
-    "hkleague2025",
-    "2025",
+    "hkleague2026",
+    "2026",
     "麻雀",
     "mj",
     "mahjong",

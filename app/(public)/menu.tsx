@@ -61,8 +61,8 @@ const Menu = () => {
           </Link>
         </li> */}
         <li>
-          <Link href="https://hkleague2024.hkmahjong.org" target="_blank">
-            HKL2024 <i className="text-xs bi bi-box-arrow-up-right"></i>
+          <Link href="https://hkleague2025.hkmahjong.org" target="_blank">
+            HKL2025 <i className="text-xs bi bi-box-arrow-up-right"></i>
           </Link>
         </li>
       </ul>

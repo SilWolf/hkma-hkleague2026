@@ -3,7 +3,7 @@ import { NextRequest } from "next/server";
 import React from "react";
 import { getMatchesByDate } from "../..";
 import { Match, Player, Team } from "@/types/index.type";
-import { getRegularTeams } from "@/helpers/sanity.helper";
+import { getBaseTeams } from "@/helpers/sanity.helper";
 
 export const dynamic = "force-dynamic";
 
@@ -47,7 +47,7 @@ const thumbnailRender = (
         }}
       >
         <img
-          src="https://hkleague2025.hkmahjong.org/images/logo.png"
+          src="https://hkleague2026.hkmahjong.org/images/logo.png"
           width={128}
           height={128}
           alt=""
@@ -61,7 +61,7 @@ const thumbnailRender = (
               marginLeft: "0.125em",
             }}
           >
-            HK-League 2025
+            HK-League 2026
           </div>
           <div
             style={{
@@ -81,7 +81,7 @@ const thumbnailRender = (
               textShadow: "#00000080 0 0 1em, #00000080 0 0 0.5em",
             }}
           >
-            香港立直麻雀團體聯賽2025
+            香港立直麻雀團體聯賽2026
           </div>
         </div>
       </div>
@@ -111,7 +111,7 @@ const thumbnailRender = (
             }}
           >
             <img
-              src="https://hkleague2025.hkmahjong.org/images/logo-hkma.png"
+              src="https://hkleague2026.hkmahjong.org/images/logo-hkma.png"
               width={212}
               height={64}
               alt=""
@@ -138,7 +138,7 @@ const thumbnailRender = (
             }}
           >
             <img
-              src="https://hkleague2025.hkmahjong.org/images/logo-mahjestic.webp"
+              src="https://hkleague2026.hkmahjong.org/images/logo-mahjestic.webp"
               width={64}
               height={64}
               alt=""
@@ -285,7 +285,7 @@ const squareRender = (
         }}
       >
         <img
-          src="https://hkleague2025.hkmahjong.org/images/logo.png"
+          src="https://hkleague2026.hkmahjong.org/images/logo.png"
           width={128}
           height={128}
           alt=""
@@ -300,7 +300,7 @@ const squareRender = (
               marginLeft: "0.125em",
             }}
           >
-            HK-League 2025
+            HK-League 2026
           </div>
           <div
             style={{
@@ -320,7 +320,7 @@ const squareRender = (
               textShadow: "#00000080 0 0 1em, #00000080 0 0 0.5em",
             }}
           >
-            香港立直麻雀團體聯賽2025
+            香港立直麻雀團體聯賽2026
           </div>
         </div>
       </div>
@@ -344,7 +344,7 @@ const squareRender = (
             }}
           >
             <img
-              src="https://hkleague2025.hkmahjong.org/images/logo-hkma.png"
+              src="https://hkleague2026.hkmahjong.org/images/logo-hkma.png"
               width={212}
               height={64}
               alt=""
@@ -365,7 +365,7 @@ const squareRender = (
             }}
           >
             <img
-              src="https://hkleague2025.hkmahjong.org/images/logo-mahjestic.png"
+              src="https://hkleague2026.hkmahjong.org/images/logo-mahjestic.png"
               width={64}
               height={64}
               alt=""
@@ -490,7 +490,7 @@ export const GET = async (
   }: {
     params: Promise<{
       date: string;
-      style: "square" | "thumbnail";
+      style: string;
     }>;
   }
 ) => {
@@ -498,11 +498,11 @@ export const GET = async (
     const { date, style } = await params;
     if (style !== "square" && style !== "thumbnail") {
       throw new Error(
-        'style must be "square" or "thumbnail", e.g. 2025-01-01/square'
+        'style must be "square" or "thumbnail", e.g. 2026-01-01/square'
       );
     }
 
-    const regularTeamIds = await getRegularTeams().then((rts) =>
+    const regularTeamIds = await getBaseTeams().then((rts) =>
       rts.map((rt) => rt._key)
     );
 
@@ -606,16 +606,16 @@ export const GET = async (
       KdamThmorProRegular,
     ] = await Promise.all([
       fetch(
-        "https://hkleague2025.hkmahjong.org/fonts/NotoSansTC-Regular.ttf"
+        "https://hkleague2026.hkmahjong.org/fonts/NotoSansTC-Regular.ttf"
       ).then((res) => res.arrayBuffer()),
       fetch(
-        `https://hkleague2025.hkmahjong.org/fonts/NotoSansTC-SemiBold.ttf`
+        `https://hkleague2026.hkmahjong.org/fonts/NotoSansTC-SemiBold.ttf`
       ).then((res) => res.arrayBuffer()),
       fetch(
-        `https://hkleague2025.hkmahjong.org/fonts/NotoSerif-SemiBold.ttf`
+        `https://hkleague2026.hkmahjong.org/fonts/NotoSerif-SemiBold.ttf`
       ).then((res) => res.arrayBuffer()),
       fetch(
-        `https://hkleague2025.hkmahjong.org/fonts/KdamThmorPro-Regular.ttf`
+        `https://hkleague2026.hkmahjong.org/fonts/KdamThmorPro-Regular.ttf`
       ).then((res) => res.arrayBuffer()),
     ]);
 

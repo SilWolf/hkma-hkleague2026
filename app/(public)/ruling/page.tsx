@@ -30,7 +30,7 @@ export default function RulingPage() {
       <section className="pb-12">
         <div className="container mx-auto px-2 max-w-screen-lg">
           <h6 className="text-lg">
-            <p>最後更新日期: 06/01/2025(一) 04:00 HKT</p>
+            <p>最後更新日期: 10/01/2026(六) 04:00 HKT</p>
             <p>內文的時間均是香港時區 (GMT+8)</p>
           </h6>
         </div>
@@ -42,7 +42,7 @@ export default function RulingPage() {
             <h3>比賽簡介</h3>
             <p>
               HK LEAGUE
-              是一個為期一年的隊制立直麻雀競技比賽，比賽中共有十六隊名額，每隊4人。
+              是一個為期一年的隊制立直麻雀競技比賽，比賽中共有十二隊名額，每隊4人。
               <br />
               HK
               League將於每週一至四（1至11月）作賽。比賽期間將會全程直播至YouTube
@@ -86,8 +86,8 @@ export default function RulingPage() {
                 <tr>
                   <th>常規賽(16隊)</th>
                   <td>60場半莊（每隊）</td>
-                  <td>2025 年 01 月 06 日（一）</td>
-                  <td>2025 年 07 月 31 日（四）</td>
+                  <td>2026 年 01 月 06 日（一）</td>
+                  <td>2026 年 07 月 31 日（四）</td>
                 </tr>
                 <tr>
                   <th>準決賽(8隊)</th>

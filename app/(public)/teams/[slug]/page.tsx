@@ -1,5 +1,5 @@
 import {
-  getRegularTeamsWithPlayersWithStatistics,
+  getBaseTeamsWithPlayersWithStatistics,
   getTeamDetailBySlug,
   getTeamSlugs,
 } from "@/helpers/sanity.helper";
@@ -39,11 +39,9 @@ export default async function TeamDetail({
   params: Promise<{ slug: string }>;
 }) {
   const slug = (await params).slug;
-  const foundTeam = await getRegularTeamsWithPlayersWithStatistics().then(
+  const foundTeam = await getBaseTeamsWithPlayersWithStatistics().then(
     (teams) => teams.find((team) => team.team.slug === slug)
   );
-
-  console.log(foundTeam?.players);
 
   if (!foundTeam) {
     return notFound();

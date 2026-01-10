@@ -1,6 +1,6 @@
 import {
   MatchDTO,
-  getRegularTeams,
+  getBaseTeams,
   getMatchesGroupedByDate,
   getMatchesGroupedByStageAndDate,
 } from "@/helpers/sanity.helper";
@@ -52,42 +52,42 @@ const STAGES = [
     label: "常規賽",
     months: [
       {
-        year: 2025,
+        year: 2026,
         month: 1,
         label: "1月",
       },
       {
-        year: 2025,
+        year: 2026,
         month: 2,
         label: "2月",
       },
       {
-        year: 2025,
+        year: 2026,
         month: 3,
         label: "3月",
       },
       {
-        year: 2025,
+        year: 2026,
         month: 4,
         label: "4月",
       },
       {
-        year: 2025,
+        year: 2026,
         month: 5,
         label: "5月",
       },
       {
-        year: 2025,
+        year: 2026,
         month: 6,
         label: "6月",
       },
       {
-        year: 2025,
+        year: 2026,
         month: 7,
         label: "7月",
       },
       {
-        year: 2025,
+        year: 2026,
         month: 8,
         label: "8月",
       },
@@ -98,12 +98,12 @@ const STAGES = [
     label: "準決賽",
     months: [
       {
-        year: 2025,
+        year: 2026,
         month: 9,
         label: "9月",
       },
       {
-        year: 2025,
+        year: 2026,
         month: 10,
         label: "10月",
       },
@@ -114,12 +114,12 @@ const STAGES = [
     label: "決賽",
     months: [
       {
-        year: 2025,
+        year: 2026,
         month: 11,
         label: "10月",
       },
       {
-        year: 2025,
+        year: 2026,
         month: 12,
         label: "11月",
       },
@@ -162,7 +162,7 @@ export default async function SchedulePage({
   const trueYear = parseInt(year);
   const trueMonth = parseInt(month);
 
-  if (trueYear < 2023 || trueYear > 2025) {
+  if (trueYear < 2023 || trueYear > 2026) {
     return notFound();
   }
 
@@ -179,7 +179,7 @@ export default async function SchedulePage({
     `${nextYear}-${nextMonth.toString().padStart(2, "0")}-01T00:00:00+08:00`
   );
 
-  const teamSorter = await getRegularTeams().then(
+  const teamSorter = await getBaseTeams().then(
     (teams) => (a: Team, b: Team) => {
       const indexOfA = teams.findIndex((item) => item.team._id === a._id);
       const indexOfB = teams.findIndex((item) => item.team._id === b._id);

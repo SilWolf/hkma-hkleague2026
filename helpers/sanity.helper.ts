@@ -8,6 +8,7 @@ import {
   RawMatchWithRounds,
   Team,
   TeamPlayer,
+  Tournament,
   TournamentTeam,
   TournamentTeamWithPlayers,
 } from "@/types/index.type";
@@ -15,7 +16,7 @@ import { mergeObject } from "@/utils/object.util";
 
 const STAGES = {
   regulars: {
-    tournamentId: process.env.SANITY_DEFAULT_TOURNAMENT_ID,
+    tournamentId: process.env.SANITY_REGULARS_TOURNAMENT_ID,
   },
   semifinals: {
     tournamentId: process.env.SANITY_SEMIFINALS_TOURNAMENT_ID,
@@ -25,7 +26,11 @@ const STAGES = {
   },
 } as const;
 
-const CURRENT_STAGE_TOURNAMENT_ID = STAGES.finals.tournamentId;
+const BASE_TOURNAMENT_ID = process.env.SANITY_BASE_TOURNAMENT_ID;
+const CURRENT_STAGE_TOURNAMENT_ID =
+  STAGES.finals.tournamentId ||
+  STAGES.semifinals.tournamentId ||
+  STAGES.regulars.tournamentId;
 
 const PLAYER_PROJECTION = `_id, name, nickname, designation, "portraitImage": portraitImage.asset->url, introduction`;
 const PLAYER_META_FIELDS = [
@@ -63,17 +68,24 @@ const publicClient = createClient({
   apiVersion: "2023-05-03",
 });
 
-export const getRegularTeams = cache(() =>
+export const getCurrentTournament = cache(() => {
+  return publicClient.fetch<Tournament>(
+    `*[_type == "matchTournament" && _id == "${BASE_TOURNAMENT_ID}"][0]`
+  );
+});
+
+export const getBaseTeams = cache(() =>
   publicClient
     .fetch(
-      `*[_type == "matchTournament" && _id == "${
-        process.env.SANITY_DEFAULT_TOURNAMENT_ID
-      }"]{ teams[]{ _key, ref->{${["_id", ...TEAM_META_FIELDS].join(
+      `*[_type == "matchTournament" && _id == "${BASE_TOURNAMENT_ID}"][0]{ teams[]{ _key, ref->{${[
+        "_id",
+        ...TEAM_META_FIELDS,
+      ].join(", ")}}, "overrided": overrided{${[...TEAM_META_FIELDS].join(
         ", "
-      )}}, "overrided": overrided{${[...TEAM_META_FIELDS].join(", ")}} } }`
+      )}} } }`
     )
-    .then((tournaments) =>
-      (tournaments[0]?.teams as TournamentTeam[]).map(
+    .then((tournament) =>
+      (tournament?.teams as TournamentTeam[]).map(
         ({ ref, overrided, ...team }) => ({
           ...team,
           team: mergeObject(ref, overrided),
@@ -82,21 +94,20 @@ export const getRegularTeams = cache(() =>
     )
 );
 
-export const getRegularTeamsWithPlayers = cache(() =>
+export const getBaseTeamsWithPlayers = cache(() =>
   publicClient
     .fetch(
-      `*[_type == "matchTournament" && _id == "${
-        process.env.SANITY_DEFAULT_TOURNAMENT_ID
-      }"]{ teams[]{ _key, ref->{${["_id", ...TEAM_META_FIELDS].join(
-        ", "
-      )}}, "overrided": overrided{${[...TEAM_META_FIELDS].join(
+      `*[_type == "matchTournament" && _id == "${BASE_TOURNAMENT_ID}"][0]{ teams[]{ _key, ref->{${[
+        "_id",
+        ...TEAM_META_FIELDS,
+      ].join(", ")}}, "overrided": overrided{${[...TEAM_META_FIELDS].join(
         ", "
       )}}, players[]{ref->{${["_id", ...PLAYER_META_FIELDS].join(
         ", "
       )}}, "overrided": overrided{${[...PLAYER_META_FIELDS].join(", ")}} } } }`
     )
-    .then((tournaments) => {
-      return (tournaments[0]?.teams as TournamentTeamWithPlayers[]).map(
+    .then((tournament) => {
+      return (tournament?.teams as TournamentTeamWithPlayers[]).map(
         ({ ref, overrided, ...team }) => ({
           ...team,
           team: mergeObject(ref, overrided),
@@ -108,25 +119,24 @@ export const getRegularTeamsWithPlayers = cache(() =>
     })
 );
 
-export const getRegularTeamsWithPlayersWithStatistics = cache(() =>
+export const getBaseTeamsWithPlayersWithStatistics = cache(() =>
   publicClient
     .fetch(
-      `*[_type == "matchTournament" && _id == "${
-        process.env.SANITY_DEFAULT_TOURNAMENT_ID
-      }"]{ teams[]{ _key, ref->{${["_id", ...TEAM_META_FIELDS].join(
-        ", "
-      )}}, "overrided": overrided{${[...TEAM_META_FIELDS].join(
+      `*[_type == "matchTournament" && _id == "${BASE_TOURNAMENT_ID}"][0]{ teams[]{ _key, ref->{${[
+        "_id",
+        ...TEAM_META_FIELDS,
+      ].join(", ")}}, "overrided": overrided{${[...TEAM_META_FIELDS].join(
         ", "
       )}}, players[]{ref->{${[
         "_id",
         ...PLAYER_META_FIELDS,
-        `"statistic": statistics[_key=="${process.env.SANITY_DEFAULT_TOURNAMENT_ID}"][0]`,
+        `"statistic": statistics[_key=="${BASE_TOURNAMENT_ID}"][0]`,
       ].join(", ")}}, "overrided": overrided{${[...PLAYER_META_FIELDS].join(
         ", "
       )}} } } }`
     )
-    .then((tournaments) => {
-      return (tournaments[0]?.teams as TournamentTeamWithPlayers[]).map(
+    .then((tournament) => {
+      return (tournament?.teams as TournamentTeamWithPlayers[]).map(
         ({ ref, overrided, ...team }) => ({
           ...team,
           team: mergeObject(ref, overrided),
@@ -138,7 +148,7 @@ export const getRegularTeamsWithPlayersWithStatistics = cache(() =>
     })
 );
 
-export const getTeams = cache(() =>
+export const getCurrentTeams = cache(() =>
   publicClient
     .fetch(
       `*[_type == "matchTournament" && _id == "${CURRENT_STAGE_TOURNAMENT_ID}"]{ teams[]{ _key, ref->{${[
@@ -159,7 +169,7 @@ export const getTeams = cache(() =>
 export const getTeamSlugs = cache(() =>
   publicClient
     .fetch(
-      `*[_type == "matchTournament" && _id == "${process.env.SANITY_DEFAULT_TOURNAMENT_ID}"]{ teams[]{ "slug": ref->slug.current } }`
+      `*[_type == "matchTournament" && _id == "${BASE_TOURNAMENT_ID}"]{ teams[]{ "slug": ref->slug.current } }`
     )
     .then((tournaments) =>
       (tournaments[0]?.teams as Team[]).map((team) => team.slug)
@@ -177,7 +187,7 @@ export const getTeamDetailBySlug = cache(async (slug: string) => {
 
   const players = await publicClient
     .fetch(
-      `*[_type == "teamPlayer" && team._ref == "${team._id}"] | order(player->name asc){ team->{_id}, player->{${PLAYER_PROJECTION}, "statistic": statistics[_key=="${process.env.SANITY_DEFAULT_TOURNAMENT_ID}"][0]}, overridedDesignation, overridedName, overridedNickname, "overridedColor": overridedColor.hex, introduction}`
+      `*[_type == "teamPlayer" && team._ref == "${team._id}"] | order(player->name asc){ team->{_id}, player->{${PLAYER_PROJECTION}, "statistic": statistics[_key=="${BASE_TOURNAMENT_ID}"][0]}, overridedDesignation, overridedName, overridedNickname, "overridedColor": overridedColor.hex, introduction}`
     )
     .then((teamPlayers: TeamPlayer[]) =>
       teamPlayers.map((teamPlayer) => ({
@@ -195,7 +205,7 @@ export const getTeamDetailBySlug = cache(async (slug: string) => {
 export const getPlayersGroupByTeams = cache(async () => {
   const teamIds = await publicClient
     .fetch(
-      `*[_type == "matchTournament" && _id == "${process.env.SANITY_DEFAULT_TOURNAMENT_ID}"]{ teams[]{ "teamId": team->_id } }`
+      `*[_type == "matchTournament" && _id == "${BASE_TOURNAMENT_ID}"]{ teams[]{ "teamId": team->_id } }`
     )
     .then(
       (tournaments) =>
@@ -236,7 +246,7 @@ export const getPlayersGroupByTeams = cache(async () => {
 export const getAllPlayersWithStat = cache(async () => {
   const players = await publicClient
     .fetch(
-      `*[_type == "teamPlayer" && count(player->statistics[_key=="${process.env.SANITY_DEFAULT_TOURNAMENT_ID}"]) > 0] | order(player->name asc){ team->${TEAM_PROJECTION}, player->{${PLAYER_PROJECTION}, "statistic": statistics[_key=="${process.env.SANITY_DEFAULT_TOURNAMENT_ID}"][0]}, overridedDesignation, overridedName, overridedNickname, "overridedColor": overridedColor.hex, introduction}`
+      `*[_type == "teamPlayer" && count(player->statistics[_key=="${BASE_TOURNAMENT_ID}"]) > 0] | order(player->name asc){ team->${TEAM_PROJECTION}, player->{${PLAYER_PROJECTION}, "statistic": statistics[_key=="${BASE_TOURNAMENT_ID}"][0]}, overridedDesignation, overridedName, overridedNickname, "overridedColor": overridedColor.hex, introduction}`
     )
     .then((teamPlayers: TeamPlayer[]) =>
       teamPlayers.map((teamPlayer) => ({
@@ -251,7 +261,7 @@ export const getAllPlayersWithStat = cache(async () => {
 export const getOldMatches = cache(() =>
   publicClient
     .fetch(
-      `*[_type == "match" && !(_id in path("drafts.**")) && tournament._ref == "${process.env.SANITY_DEFAULT_TOURNAMENT_ID}" && status == "completed"] | order(startAt desc)[0...8]{ _id, name, playerEast->${TEAM_PLAYER_PROJECTION}, playerSouth->${TEAM_PLAYER_PROJECTION}, playerWest->${TEAM_PLAYER_PROJECTION}, playerNorth->${TEAM_PLAYER_PROJECTION}, playerEastTeam->${TEAM_PROJECTION}, playerSouthTeam->${TEAM_PROJECTION}, playerWestTeam->${TEAM_PROJECTION}, playerNorthTeam->${TEAM_PROJECTION}, startAt, youtubeUrl, bilibiliUrl, result}`
+      `*[_type == "match" && !(_id in path("drafts.**")) && tournament._ref == "${BASE_TOURNAMENT_ID}" && status == "completed"] | order(startAt desc)[0...8]{ _id, name, playerEast->${TEAM_PLAYER_PROJECTION}, playerSouth->${TEAM_PLAYER_PROJECTION}, playerWest->${TEAM_PLAYER_PROJECTION}, playerNorth->${TEAM_PLAYER_PROJECTION}, playerEastTeam->${TEAM_PROJECTION}, playerSouthTeam->${TEAM_PROJECTION}, playerWestTeam->${TEAM_PROJECTION}, playerNorthTeam->${TEAM_PROJECTION}, startAt, youtubeUrl, bilibiliUrl, result}`
     )
     .then((matches: Match[]) =>
       matches.map(({ ...match }) => ({
@@ -262,33 +272,35 @@ export const getOldMatches = cache(() =>
 );
 
 export const getMatch = cache(async (matchId: string) => {
-  const regularTeams = await getRegularTeamsWithPlayers();
-  const rawMatch = await publicClient
-    .fetch<RawMatchWithRounds[]>(
-      `*[_type == "match" && _id == "${matchId}"]{ _id, name, playerEast, playerSouth, playerWest, playerNorth, playerEastTeam, playerSouthTeam, playerWestTeam, playerNorthTeam, startAt, youtubeUrl, bilibiliUrl, result, rounds}`
-    )
-    .then((rawMatches) => rawMatches[0]);
+  const baseTeams = await getBaseTeamsWithPlayers();
+  const rawMatch = await publicClient.fetch<RawMatchWithRounds>(
+    `*[_type == "match" && _id == "${matchId}"][0]{ _id, name, playerEast, playerSouth, playerWest, playerNorth, playerEastTeam, playerSouthTeam, playerWestTeam, playerNorthTeam, startAt, youtubeUrl, bilibiliUrl, result, rounds}`
+  );
 
-  const playerEastTeam = regularTeams.find(
+  if (!rawMatch) {
+    throw new Error("RawMatch not found");
+  }
+
+  const playerEastTeam = baseTeams.find(
     ({ team }) => team._id === rawMatch.playerEastTeam!._ref
   )!;
   const playerEast = playerEastTeam.players.find(
     ({ _id }) => _id === rawMatch.playerEast!._ref
   );
 
-  const playerSouthTeam = regularTeams.find(
+  const playerSouthTeam = baseTeams.find(
     ({ team }) => team._id === rawMatch.playerSouthTeam!._ref
   )!;
   const playerSouth = playerSouthTeam.players.find(
     ({ _id }) => _id === rawMatch.playerSouth!._ref
   );
-  const playerWestTeam = regularTeams.find(
+  const playerWestTeam = baseTeams.find(
     ({ team }) => team._id === rawMatch.playerWestTeam!._ref
   )!;
   const playerWest = playerWestTeam.players.find(
     ({ _id }) => _id === rawMatch.playerWest!._ref
   );
-  const playerNorthTeam = regularTeams.find(
+  const playerNorthTeam = baseTeams.find(
     ({ team }) => team._id === rawMatch.playerNorthTeam!._ref
   )!;
   const playerNorth = playerNorthTeam.players.find(
@@ -309,7 +321,7 @@ export const getMatch = cache(async (matchId: string) => {
 });
 
 export const getLastDateFinishedMatchesGroupedByDate = cache(async () => {
-  const regularTeams = await getRegularTeams();
+  const baseTeams = await getBaseTeams();
   const scheduledRawMatches = await publicClient.fetch<RawMatch[]>(
     `*[_type == "match" && !(_id in path("drafts.**")) && tournament._ref == "${CURRENT_STAGE_TOURNAMENT_ID}" && defined(result.playerEast.score)] | order(startAt desc)[0...2] { _id, name, playerEastTeam, playerSouthTeam, playerWestTeam, playerNorthTeam, startAt, youtubeUrl, bilibiliUrl, result}`
   );
@@ -343,17 +355,17 @@ export const getLastDateFinishedMatchesGroupedByDate = cache(async () => {
 
     matchesGroupedByDate[dateString].matches.unshift({
       ...rawMatch,
-      playerEastTeam: regularTeams.find(
-        ({ _key }) => _key === rawMatch.playerEastTeam!._ref
+      playerEastTeam: baseTeams.find(
+        ({ team }) => team._id === rawMatch.playerEastTeam!._ref
       )!.team,
-      playerSouthTeam: regularTeams.find(
-        ({ _key }) => _key === rawMatch.playerSouthTeam!._ref
+      playerSouthTeam: baseTeams.find(
+        ({ team }) => team._id === rawMatch.playerSouthTeam!._ref
       )!.team,
-      playerWestTeam: regularTeams.find(
-        ({ _key }) => _key === rawMatch.playerWestTeam!._ref
+      playerWestTeam: baseTeams.find(
+        ({ team }) => team._id === rawMatch.playerWestTeam!._ref
       )!.team,
-      playerNorthTeam: regularTeams.find(
-        ({ _key }) => _key === rawMatch.playerNorthTeam!._ref
+      playerNorthTeam: baseTeams.find(
+        ({ team }) => team._id === rawMatch.playerNorthTeam!._ref
       )!.team,
     });
   }
@@ -371,7 +383,7 @@ export const getLastDateFinishedMatchesGroupedByDate = cache(async () => {
 });
 
 export const getLatestComingMatchesGroupedByDate = cache(async () => {
-  const regularTeams = await getRegularTeams();
+  const baseTeams = await getBaseTeams();
   const scheduledMatches = await publicClient.fetch<RawMatch[]>(
     `*[_type == "match" && !(_id in path("drafts.**")) && tournament._ref == "${CURRENT_STAGE_TOURNAMENT_ID}" && !defined(result.playerEast.score)] | order(startAt asc)[0...4] { _id, name, playerEastTeam, playerSouthTeam, playerWestTeam, playerNorthTeam, startAt, youtubeUrl, bilibiliUrl}`
   );
@@ -405,16 +417,16 @@ export const getLatestComingMatchesGroupedByDate = cache(async () => {
 
     matchesGroupedByDate[dateString].matches.push({
       ...rawMatch,
-      playerEastTeam: regularTeams.find(
+      playerEastTeam: baseTeams.find(
         ({ _key }) => _key === rawMatch.playerEastTeam!._ref
       )!.team,
-      playerSouthTeam: regularTeams.find(
+      playerSouthTeam: baseTeams.find(
         ({ _key }) => _key === rawMatch.playerSouthTeam!._ref
       )!.team,
-      playerWestTeam: regularTeams.find(
+      playerWestTeam: baseTeams.find(
         ({ _key }) => _key === rawMatch.playerWestTeam!._ref
       )!.team,
-      playerNorthTeam: regularTeams.find(
+      playerNorthTeam: baseTeams.find(
         ({ _key }) => _key === rawMatch.playerNorthTeam!._ref
       )!.team,
     });
@@ -443,7 +455,7 @@ export const getMatchesGroupedByDate = cache(
     const teamProjection = TEAM_PROJECTION;
 
     const scheduledMatches = await publicClient.fetch<Match[]>(
-      `*[_type == "match" && !(_id in path("drafts.**")) && tournament._ref == "${process.env.SANITY_DEFAULT_TOURNAMENT_ID}" && startAt >= "${startDate}" && startAt < "${endDate}"] | order(startAt asc){ _id, name, playerEast->{${teamPlayerProjection}}, playerSouth->{${teamPlayerProjection}}, playerWest->{${teamPlayerProjection}}, playerNorth->{${teamPlayerProjection}}, playerEastTeam->${teamProjection}, playerSouthTeam->${teamProjection}, playerWestTeam->${teamProjection}, playerNorthTeam->${teamProjection}, startAt, youtubeUrl, bilibiliUrl, result}`
+      `*[_type == "match" && !(_id in path("drafts.**")) && tournament._ref == "${BASE_TOURNAMENT_ID}" && startAt >= "${startDate}" && startAt < "${endDate}"] | order(startAt asc){ _id, name, playerEast->{${teamPlayerProjection}}, playerSouth->{${teamPlayerProjection}}, playerWest->{${teamPlayerProjection}}, playerNorth->{${teamPlayerProjection}}, playerEastTeam->${teamProjection}, playerSouthTeam->${teamProjection}, playerWestTeam->${teamProjection}, playerNorthTeam->${teamProjection}, startAt, youtubeUrl, bilibiliUrl, result}`
     );
 
     const matchesGroupedByDate: Record<
@@ -483,7 +495,7 @@ export const getMatchesGroupedByStageAndDate = cache(
     endDate: string,
     options?: { withPlayerDetails?: boolean }
   ) => {
-    const regularTeams = await getRegularTeamsWithPlayers();
+    const baseTeams = await getBaseTeamsWithPlayers();
 
     const activeStage = STAGES[stage];
     const scheduledMatches = await publicClient.fetch<RawMatch[]>(
@@ -508,25 +520,25 @@ export const getMatchesGroupedByStageAndDate = cache(
         };
       }
 
-      const teamEast = regularTeams.find(
+      const teamEast = baseTeams.find(
         ({ team }) => rawMatch.playerEastTeam?._ref === team._id
       );
       const playerEast = teamEast?.players.find(
         ({ _id }) => _id === rawMatch.playerEast?._ref
       );
-      const teamSouth = regularTeams.find(
+      const teamSouth = baseTeams.find(
         ({ team }) => rawMatch.playerSouthTeam?._ref === team._id
       );
       const playerSouth = teamSouth?.players.find(
         ({ _id }) => _id === rawMatch.playerSouth?._ref
       );
-      const teamWest = regularTeams.find(
+      const teamWest = baseTeams.find(
         ({ team }) => rawMatch.playerWestTeam?._ref === team._id
       );
       const playerWest = teamWest?.players.find(
         ({ _id }) => _id === rawMatch.playerWest?._ref
       );
-      const teamNorth = regularTeams.find(
+      const teamNorth = baseTeams.find(
         ({ team }) => rawMatch.playerNorthTeam?._ref === team._id
       );
       const playerNorth = teamNorth?.players.find(
@@ -605,7 +617,7 @@ export const formatTeamPlayerDTO = (
     playerNickname: "",
     playerDesignation: "",
     playerPortraitImageUrl:
-      "https://hkleague2025.hkmahjong.org/images/empty.png",
+      "https://hkleague2026.hkmahjong.org/images/empty.png",
     playerIntroduction: "",
     playerFullname: "",
     teamId: "",
@@ -614,7 +626,7 @@ export const formatTeamPlayerDTO = (
     teamThirdName: "",
     teamFullname: "",
     color: "#000000",
-    teamLogoImageUrl: "https://hkleague2025.hkmahjong.org/images/empty.png",
+    teamLogoImageUrl: "https://hkleague2026.hkmahjong.org/images/empty.png",
     teamSlug: "",
     teamIntroduction: "",
   };
