@@ -418,16 +418,16 @@ export const getLatestComingMatchesGroupedByDate = cache(async () => {
     matchesGroupedByDate[dateString].matches.push({
       ...rawMatch,
       playerEastTeam: baseTeams.find(
-        ({ _key }) => _key === rawMatch.playerEastTeam!._ref
+        ({ team }) => team._id === rawMatch.playerEastTeam!._ref
       )!.team,
       playerSouthTeam: baseTeams.find(
-        ({ _key }) => _key === rawMatch.playerSouthTeam!._ref
+        ({ team }) => team._id === rawMatch.playerSouthTeam!._ref
       )!.team,
       playerWestTeam: baseTeams.find(
-        ({ _key }) => _key === rawMatch.playerWestTeam!._ref
+        ({ team }) => team._id === rawMatch.playerWestTeam!._ref
       )!.team,
       playerNorthTeam: baseTeams.find(
-        ({ _key }) => _key === rawMatch.playerNorthTeam!._ref
+        ({ team }) => team._id === rawMatch.playerNorthTeam!._ref
       )!.team,
     });
   }
