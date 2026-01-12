@@ -138,7 +138,7 @@ const thumbnailRender = (
             }}
           >
             <img
-              src="https://hkleague2026.hkmahjong.org/images/logo-mahjestic.webp"
+              src="https://hkleague2026.hkmahjong.org/images/logo-mahjestic.png"
               width={64}
               height={64}
               alt=""
@@ -202,24 +202,75 @@ const thumbnailRender = (
           <div
             style={{
               display: "flex",
-              position: "relative",
+              position: "absolute",
+              overflow: "hidden",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
             }}
           >
             <img
               style={{
-                width: "100%",
+                width: "150%",
+                opacity: 0.25,
+                position: "absolute",
+                right: "-50px",
               }}
               src={`${team.squareLogoImage + "?w=800&h=800&fm=png"}`}
               alt=""
             />
           </div>
-          <div style={{ display: "flex" }}>{team.name}</div>
+          {players[0] && (
+            <div
+              style={{
+                display: "flex",
+                position: "absolute",
+                right: "0px",
+                bottom: "40px",
+                width: "288px",
+                overflow: "hidden",
+              }}
+            >
+              <img
+                style={{
+                  width: "100%",
+                }}
+                src={`${players[0].portraitImage + "?fm=png"}`}
+                alt=""
+              />
+            </div>
+          )}
+          <div
+            style={{
+              background: `${team.color}B0`,
+              position: "absolute",
+              bottom: 0,
+              left: 0,
+              right: 0,
+              height: "115px",
+            }}
+          ></div>
+          <div
+            style={{
+              display: "flex",
+              alignSelf: "flex-start",
+              marginTop: "10.8em",
+              paddingLeft: "10px",
+              paddingRight: "10px",
+            }}
+          >
+            {team.name}
+          </div>
           <div
             style={{
               display: "flex",
               fontSize: "0.75em",
               height: "1.25em",
               whiteSpace: "nowrap",
+              alignSelf: "flex-start",
+              paddingLeft: "10px",
+              paddingRight: "10px",
             }}
           >
             {team.secondaryName || " "}
@@ -230,15 +281,18 @@ const thumbnailRender = (
               flexDirection: "column",
               justifyContent: "center",
               fontSize: "0.5em",
-              height: "4.5em",
+              marginTop: "1em",
+              alignSelf: "flex-start",
+              paddingLeft: "10px",
+              paddingRight: "10px",
             }}
           >
-            {players.map((player) => (
-              <div key={player._id} style={{ display: "flex" }}>
-                {player.name}
-                {player.nickname && ` (${player.nickname})`}
+            {players[0] && (
+              <div key={players[0]._id} style={{ display: "flex" }}>
+                {players[0].name}
+                {players[0].nickname && ` (${players[0].nickname})`}
               </div>
-            ))}
+            )}
           </div>
         </div>
       ))}
@@ -419,7 +473,7 @@ const squareRender = (
               justifyContent: "flex-end",
               position: "relative",
               flex: 1,
-              padding: "0.75em 2em 0 2em",
+              padding: "0.75em 0.5em 0 0.5em",
             }}
           >
             <div
@@ -439,20 +493,56 @@ const squareRender = (
               style={{
                 display: "flex",
                 position: "relative",
+                width: "280px",
+                height: "200px",
               }}
             >
               <img
                 style={{
                   width: "100%",
+                  opacity: 0.35,
+                  position: "absolute",
+                  top: "10%",
+                  left: "-40px",
                 }}
                 src={`${team.squareLogoImage + "?w=800&h=800&fm=png"}`}
                 alt=""
               />
+              {players[0] && (
+                <div
+                  style={{
+                    display: "flex",
+                    position: "absolute",
+                    right: "-50px",
+                    bottom: "-160px",
+                    width: "240px",
+                    height: "320px",
+                    overflow: "hidden",
+                  }}
+                >
+                  <img
+                    style={{
+                      width: "100%",
+                    }}
+                    src={`${players[0].portraitImage + "?fm=png"}`}
+                    alt=""
+                  />
+                </div>
+              )}
             </div>
-            <div style={{ display: "flex" }}>{team.name}</div>
             <div
               style={{
                 display: "flex",
+                alignSelf: "flex-start",
+                marginTop: "2em",
+              }}
+            >
+              {team.name}
+            </div>
+            <div
+              style={{
+                display: "flex",
+                alignSelf: "flex-start",
                 fontSize: "0.75em",
                 height: "1em",
                 whiteSpace: "nowrap",
@@ -464,17 +554,19 @@ const squareRender = (
               style={{
                 display: "flex",
                 flexDirection: "column",
-                justifyContent: "center",
+                justifyContent: "flex-start",
+                alignSelf: "flex-start",
                 fontSize: "0.5em",
-                height: "4.5em",
+                height: "1.75em",
+                marginTop: "0.75em",
               }}
             >
-              {players.map((player) => (
-                <div key={player._id} style={{ display: "flex" }}>
-                  {player.name}
-                  {player.nickname && ` (${player.nickname})`}
+              {players[0] && (
+                <div style={{ display: "flex" }}>
+                  {players[0].name}
+                  {players[0].nickname && ` (${players[0].nickname})`}
                 </div>
-              ))}
+              )}
             </div>
           </div>
         ))}
