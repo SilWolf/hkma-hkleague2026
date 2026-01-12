@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 import { NextRequest } from "next/server";
 import React from "react";
-import { getMatchesByDate } from "../..";
+import { getMatchesByDate } from "../../..";
 import { Match, Player, Team } from "@/types/index.type";
 import { getBaseTeams } from "@/helpers/sanity.helper";
 
@@ -582,23 +582,31 @@ export const GET = async (
   }: {
     params: Promise<{
       date: string;
+      matchIndex: string;
       style: string;
     }>;
   }
 ) => {
   try {
-    const { date, style } = await params;
+    const { date, matchIndex, style } = await params;
     if (style !== "square" && style !== "thumbnail") {
       throw new Error(
-        'style must be "square" or "thumbnail", e.g. 2026-01-01/square'
+        'style must be "square" or "thumbnail", e.g. 2026-01-01/1/square'
       );
+    }
+
+    if (isNaN(parseInt(matchIndex))) {
+      throw new Error("matchIndex must be a number, e.g. 2026-01-01/1/square");
     }
 
     const regularTeamIds = await getBaseTeams().then((rts) =>
       rts.map((rt) => rt._key)
     );
 
-    const matches = await getMatchesByDate(date);
+    const matches = await getMatchesByDate(date).then((localMatches) => {
+      return [localMatches[parseInt(matchIndex) - 1]];
+    });
+
     const sortedTeamIds = [
       matches[0].playerEastTeam!._id,
       matches[0].playerSouthTeam!._id,
